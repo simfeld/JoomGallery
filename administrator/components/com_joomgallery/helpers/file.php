@@ -590,6 +590,30 @@ class JoomFile
           }
         }
 
+        $exif = exif_read_data($src_file);
+        
+        $degrees=0;
+
+        switch($exif['Orientation'])
+        {
+          case 1: // no need to perform any changes
+          break;
+          case 3: // 180 rotate left
+          $degrees = 180;
+          break;
+          case 6: // 90 rotate right
+          $degrees = '270';
+          break;
+          case 8: // 90 rotate left
+          $degrees = '90';
+          break;
+          default:
+          break;
+        }
+
+        $rotate = imagerotate($dst_img, $degrees, 0);
+        $dst_img=$rotate;
+
         if(!@imagejpeg($dst_img, $dest_file, $dest_qual))
         {
           // Workaround for servers with wwwrun problem
